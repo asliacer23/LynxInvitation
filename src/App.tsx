@@ -16,6 +16,7 @@ import Client1Homepage from '@/pagesforcustomers/Client1/Client1';
 import AdminClient1 from '@/pagesforcustomers/Client1/AdminClient1/AdminClient1';
 import Client2Homepage from '@/pagesforcustomers/Client2/Client2';
 import AdminClient2 from '@/pagesforcustomers/Client2/AdminClient2/AdminClient2';
+import Invitation from '@/pagesforcustomers/Client1/Invitation';
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Chatbot } from "@/components/Chatbot";
 
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/client1" element={<Client1Homepage />} />
             <Route path="/client1/*" element={<Client1Homepage />} />
             <Route path="/client1/admin" element={<AdminClient1 />} />
+            <Route path="/invitation" element={<Invitation />} />
 
             {/* Client2 Routes (Debut) */}
             <Route path="/client2" element={<Client2Homepage />} />

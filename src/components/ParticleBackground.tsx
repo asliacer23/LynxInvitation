@@ -5,18 +5,21 @@ import * as THREE from "three";
 
 function Particles() {
   const ref = useRef<THREE.Points>(null);
-  
+
+  // detect theme from <html class="dark">
+  const isDark = document.documentElement.classList.contains("dark");
+  const particleColor = isDark ? "#ffffff" : "#000000";
+
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(2000 * 3);
-    
+
     for (let i = 0; i < 2000; i++) {
       const x = (Math.random() - 0.5) * 50;
       const y = (Math.random() - 0.5) * 50;
       const z = (Math.random() - 0.5) * 50;
-      
       positions.set([x, y, z], i * 3);
     }
-    
+
     return positions;
   }, []);
 
@@ -31,7 +34,7 @@ function Particles() {
     <Points ref={ref} positions={particlesPosition} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="hsl(189, 95%, 52%)"
+        color={particleColor}
         size={0.15}
         sizeAttenuation={true}
         depthWrite={false}

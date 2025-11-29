@@ -99,9 +99,11 @@ const faqs = [
 
 export function FAQs() {
   const [search, setSearch] = useState("");
+  const [showAll, setShowAll] = useState(false); // ✅ NEW STATE
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
 
+  // Intersection Observer Animation Trigger
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -113,10 +115,7 @@ export function FAQs() {
       { threshold: 0.2 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
+    if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
@@ -163,10 +162,7 @@ export function FAQs() {
           animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
           transition={{ delay: 0.1, duration: 0.6 }}
         >
-          <motion.div
-            whileFocus={{ scale: 1.02 }}
-            className="relative"
-          >
+          <motion.div className="relative">
             <Search className="absolute left-4 top-3.5 w-5 h-5 text-muted-foreground" />
             <motion.input
               type="text"
@@ -179,52 +175,59 @@ export function FAQs() {
           </motion.div>
         </motion.div>
 
-        {/* FAQ List */}
+        {/* FAQ LIST */}
         <Accordion type="single" collapsible className="space-y-5">
           <AnimatePresence mode="popLayout">
             {filteredFaqs.length > 0 ? (
-              filteredFaqs.map((faq, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.25 }}
-                >
+              filteredFaqs
+                .slice(0, showAll ? filteredFaqs.length : 6) // ✅ LIMIT FAQS
+                .map((faq, index) => (
                   <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    key={index}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.25 }}
                   >
-                    <AccordionItem
-                      value={`faq-${index}`}
-                      className="bg-card/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-[0_0_30px_rgba(255,255,255,0.06)] hover:shadow-[0_0_30px_rgba(0,200,255,0.2)] transition overflow-hidden"
+                    <motion.div
+                      whileHover={{ scale: 1.01 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     >
-                      <AccordionTrigger className="flex items-center gap-4 text-left text-lg font-semibold hover:no-underline group">
-                        <motion.div
-                          whileHover={{ rotate: 10, scale: 1.1 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        >
-                          <faq.icon className="w-6 h-6 black dark:white" />
-                        </motion.div>
-                        <span className="group-hover:text-[#1e3a8a] transition-colors">
-                          {faq.question}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <motion.p
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ delay: 0.1, duration: 0.3 }}
-                          className="text-muted-foreground whitespace-pre-line leading-relaxed mt-3"
-                        >
-                          {faq.answer}
-                        </motion.p>
-                      </AccordionContent>
-                    </AccordionItem>
+                      <AccordionItem
+                        value={`faq-${index}`}
+                        className="bg-card/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-[0_0_30px_rgba(255,255,255,0.06)] 
+                                  hover:shadow-[0_0_30px_rgba(0,0,0,0.25)]
+                                  dark:shadow-[0_0_30px_rgba(255,255,255,0.15)] 
+                                  dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.45)] 
+                                  transition overflow-hidden"
+                      >
+                        <AccordionTrigger className="flex items-center gap-4 text-left text-lg font-semibold hover:no-underline group">
+                          <motion.div
+                            whileHover={{ rotate: 10, scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          >
+                            <faq.icon className="w-6 h-6 black dark:white" />
+                          </motion.div>
+                          <span className="group-hover:text-[#1e3a8a] transition-colors">
+                            {faq.question}
+                          </span>
+                        </AccordionTrigger>
+
+                        <AccordionContent>
+                          <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ delay: 0.1, duration: 0.3 }}
+                            className="text-muted-foreground whitespace-pre-line leading-relaxed mt-3"
+                          >
+                            {faq.answer}
+                          </motion.p>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              ))
+                ))
             ) : (
               <motion.p
                 className="text-center text-muted-foreground"
@@ -237,6 +240,22 @@ export function FAQs() {
             )}
           </AnimatePresence>
         </Accordion>
+
+        {/* VIEW MORE / VIEW LESS BUTTON */}
+        {filteredFaqs.length > 6 && (
+          <motion.div
+            className="text-center mt-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="px-6 py-3 rounded-xl bg-card/40 border border-white/10 hover:border-[#1e3a8a] hover:bg-card/60 transition shadow-md"
+            >
+              {showAll ? "View Less" : "View More"}
+            </button>
+          </motion.div>
+        )}
       </div>
     </section>
   );

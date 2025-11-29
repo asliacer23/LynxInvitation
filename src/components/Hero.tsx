@@ -88,14 +88,15 @@ export function Hero() {
   <motion.div
     animate={{ rotate: 360 }}
     transition={{ duration: 2, repeat: Infinity }}
-    className="h-4 w-4"
+    className="h-6 w-6 md:h-7 md:w-7 flex items-center justify-center"
   >
     <img
-      src="/favicon.ico"   // Make sure this path points to your favicon
+      src="/favicon.ico"
       alt="Logo"
-      className="h-4 w-4 object-contain"
+      className="h-full w-full object-contain brightness-0 dark:invert"
     />
   </motion.div>
+
   <span className="text-sm text-muted-foreground">Next-Gen Digital Invitations</span>
 </motion.div>
 
