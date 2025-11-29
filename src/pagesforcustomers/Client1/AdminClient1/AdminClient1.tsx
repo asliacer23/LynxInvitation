@@ -1,16 +1,10 @@
 /**
- * Admin Dashboard for Client1 (Wedding) - MERGED VERSION
- * 
- * All features in one file:
- * ✅ Admin login/logout
- * ✅ Guest list management (add/remove guests)
- * ✅ RSVP management (view all responses)
- * ✅ Admin reset RSVP feature
- * ✅ Analytics dashboard
- * ✅ Real-time data sync with Supabase
+ * AdminClient1 - Wedding Admin Dashboard (REDESIGNED)
+ * Elegant, responsive, fully-featured admin dashboard with modern UI
+ * Manages guest list and RSVP responses for Client1 (Wedding Event)
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -27,30 +21,21 @@ import {
   Loader,
   Check,
   AlertCircle,
+  RotateCcw,
+  Search,
+  Filter,
 } from "lucide-react";
-
-/* ===========================================================
-   SUPABASE CONFIGURATION
-   =========================================================== */
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-/* ===========================================================
-   ADMIN CREDENTIALS
-   =========================================================== */
 
 const ADMIN_CREDENTIALS = {
   email: "admin@client1wedding.com",
   password: "Client1Wedding2026!",
 };
 
-/* ===========================================================
-   LOGIN PAGE
-   =========================================================== */
-
+/* ====================== LOGIN PAGE ======================= */
 const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +49,10 @@ const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     setIsLoading(true);
 
     if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-      localStorage.setItem("client1_admin_auth", JSON.stringify({ email, loggedInAt: new Date().toISOString() }));
+      localStorage.setItem(
+        "client1_admin_auth",
+        JSON.stringify({ email, loggedInAt: new Date().toISOString() })
+      );
       onLogin();
     } else {
       setError("Invalid email or password");
@@ -74,119 +62,181 @@ const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-rose-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-amber-50 flex items-center justify-center p-4">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-rose-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: "2s" }}></div>
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-lg border border-rose-100"
       >
         <div className="text-center mb-8">
-          <Heart className="w-12 h-12 text-rose-600 mx-auto mb-4" />
-          <h1 className="text-3xl font-serif font-bold text-gray-800">Admin Login</h1>
-          <p className="text-gray-600 text-sm mt-2">Client1 Wedding Dashboard</p>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-rose-100 to-pink-100 flex items-center justify-center mb-6 shadow-lg"
+          >
+            <Heart className="w-10 h-10 text-rose-600 fill-rose-600" />
+          </motion.div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+            Admin Access
+          </h1>
+          <p className="text-gray-600 text-sm mt-3 font-medium">Wedding Event Management</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">Email</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@client1wedding.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-rose-600"
+              className="w-full px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition bg-rose-50 placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">Password</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-rose-600"
+                placeholder="••••••••••"
+                className="w-full px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition bg-rose-50 placeholder-gray-400"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-rose-600 transition"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
-          {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm">{error}</div>}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-3 rounded-xl text-sm font-medium border border-red-200"
+            >
+              <AlertCircle size={16} />
+              {error}
+            </motion.div>
+          )}
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={isLoading}
-            className="w-full py-2 bg-rose-600 text-white rounded-lg font-semibold hover:bg-rose-700 transition-colors disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold py-3 rounded-xl hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {isLoading ? "Logging in..." : "Login"}
-          </button>
+            {isLoading ? (
+              <>
+                <Loader size={18} className="animate-spin" />
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
+          </motion.button>
         </form>
 
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-xs text-blue-700">
-            <strong>Demo Credentials:</strong><br />
-            Email: admin@client1wedding.com<br />
-            Password: Client1Wedding2026!
-          </p>
-        </div>
+        <p className="text-center text-gray-500 text-xs mt-6">
+          Protected admin dashboard • Secure access only
+        </p>
       </motion.div>
     </div>
   );
 };
 
-/* ===========================================================
-   GUEST LIST MANAGEMENT TAB (MERGED)
-   =========================================================== */
-
+/* ====================== MAIN DASHBOARD ======================= */
 interface Guest {
   id: number;
   guest_name: string;
   created_at: string;
+  updated_at: string;
 }
 
-const GuestListManagement: React.FC = () => {
-  const [guests, setGuests] = useState<Guest[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [guestName, setGuestName] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+interface Rsvp {
+  id: number;
+  guest_list_id: number;
+  guest_name: string;
+  attending: boolean | null;
+  guest_count: number | null;
+  dietary_restrictions: string | null;
+  allergies: string | null;
+  special_requests: string | null;
+  wish: string | null;
+  submitted_at: string | null;
+}
 
-  useEffect(() => {
-    fetchGuests();
-  }, []);
+const AdminDashboard: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [rsvps, setRsvps] = useState<Rsvp[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeleteingId] = useState<number | null>(null);
+  const [resettingId, setResettingId] = useState<number | null>(null);
+  const [guestName, setGuestName] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<"guests" | "rsvps" | "analytics">("guests");
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterAttending, setFilterAttending] = useState<"all" | "yes" | "no" | "pending">("all");
 
   const fetchGuests = async () => {
     try {
-      setIsLoading(true);
-      // Query from guest_list table (admin's authorized guests)
+      setLoading(true);
       const { data, error } = await supabase
         .from("guest_list")
-        .select("id, guest_name, created_at")
-        .eq("client", "client1")
-        .order("created_at", { ascending: false });
+        .select("*")
+        .order("guest_name", { ascending: true });
 
-      if (error) {
-        console.error("Error fetching guests:", error);
-        setMessage({ type: "error", text: "Failed to load guest list" });
-      } else {
-        setGuests(data || []);
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      setMessage({ type: "error", text: "An error occurred while loading guests" });
+      if (error) throw error;
+      setGuests(data || []);
+    } catch (error) {
+      console.error("Error fetching guests:", error);
+      setMessage({ type: "error", text: "Failed to fetch guests" });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
+
+  const fetchRsvps = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("rsvp_responses")
+        .select("*")
+        .order("submitted_at", { ascending: false, nullsFirst: true });
+
+      if (error) throw error;
+      setRsvps(data || []);
+    } catch (error) {
+      console.error("Error fetching RSVPs:", error);
+      setMessage({ type: "error", text: "Failed to fetch RSVPs" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "guests") {
+      fetchGuests();
+    } else if (activeTab === "rsvps") {
+      fetchRsvps();
+    }
+  }, [activeTab]);
 
   const handleAddGuest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,30 +249,27 @@ const GuestListManagement: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Insert into guest_list table
-      const { error } = await supabase
-        .from("guest_list")
-        .insert([
-          {
-            client: "client1",
-            guest_name: guestName.trim(),
-          },
-        ]);
+      const { error } = await supabase.from("guest_list").insert([
+        {
+          guest_name: guestName.trim(),
+        },
+      ]);
 
       if (error) {
-        if (error.message.includes("duplicate")) {
+        if ((error.message as string).includes("duplicate")) {
           setMessage({ type: "error", text: "This guest name already exists" });
+        } else if ((error.message as string).includes("row-level security")) {
+          setMessage({ type: "error", text: "RLS Policy Error - Contact support" });
         } else {
-          setMessage({ type: "error", text: "Failed to add guest" });
+          setMessage({ type: "error", text: `Failed: ${error.message}` });
         }
       } else {
-        setMessage({ type: "success", text: "Guest added successfully" });
+        setMessage({ type: "success", text: "✓ Guest added successfully" });
         setGuestName("");
         setShowAddForm(false);
         fetchGuests();
       }
     } catch (err) {
-      console.error("Error:", err);
       setMessage({ type: "error", text: "An unexpected error occurred" });
     } finally {
       setIsSubmitting(false);
@@ -232,250 +279,25 @@ const GuestListManagement: React.FC = () => {
   const handleDeleteGuest = async (id: number, name: string) => {
     if (!confirm(`Remove "${name}" from guest list?`)) return;
 
-    setDeletingId(id);
+    setDeleteingId(id);
     try {
-      // Delete from guest_list (CASCADE will delete rsvp_responses)
-      const { error } = await supabase
-        .from("guest_list")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("guest_list").delete().eq("id", id);
 
       if (error) {
-        setMessage({ type: "error", text: "Failed to delete guest" });
+        setMessage({ type: "error", text: `Failed to delete: ${error.message}` });
       } else {
-        setMessage({ type: "success", text: "Guest removed successfully" });
+        setMessage({ type: "success", text: "✓ Guest removed successfully" });
         fetchGuests();
       }
     } catch (err) {
-      console.error("Error:", err);
-      setMessage({ type: "error", text: "An error occurred while deleting guest" });
+      setMessage({ type: "error", text: "Error removing guest" });
     } finally {
-      setDeletingId(null);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "responded":
-        return "bg-green-100 text-green-800";
-      case "invited":
-        return "bg-blue-100 text-blue-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Message Alert */}
-      <AnimatePresence>
-        {message && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className={`p-4 rounded-lg flex items-start gap-3 ${
-              message.type === "success"
-                ? "bg-green-100 border border-green-300 text-green-800"
-                : "bg-red-100 border border-red-300 text-red-800"
-            }`}
-          >
-            {message.type === "success" ? (
-              <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
-            ) : (
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-            )}
-            <div>
-              <p className="font-semibold">{message.type === "success" ? "Success" : "Error"}</p>
-              <p className="text-sm">{message.text}</p>
-            </div>
-            <button onClick={() => setMessage(null)} className="ml-auto text-lg hover:opacity-70">
-              ✕
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Add Guest Form */}
-      {showAddForm && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="bg-white border border-gray-200 rounded-lg p-6 overflow-hidden"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Guest</h3>
-
-          <form onSubmit={handleAddGuest} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Guest Name *</label>
-              <input
-                type="text"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
-                placeholder="Full name of guest"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-rose-600"
-              />
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2 bg-rose-600 text-white rounded-lg font-semibold hover:bg-rose-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader className="w-4 h-4 animate-spin" />
-                    Adding...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    Add Guest
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowAddForm(false);
-                  setGuestName("");
-                }}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </motion.div>
-      )}
-
-      {/* Add Button */}
-      {!showAddForm && (
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowAddForm(true)}
-          className="px-6 py-2 bg-rose-600 text-white rounded-lg font-semibold hover:bg-rose-700 transition-colors flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add New Guest
-        </motion.button>
-      )}
-
-      {/* Guest List Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="text-lg font-semibold text-gray-900">Authorized Guests ({guests.length})</h3>
-        </div>
-
-        {isLoading ? (
-          <div className="p-8 text-center">
-            <Loader className="w-8 h-8 animate-spin text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-600">Loading guest list...</p>
-          </div>
-        ) : guests.length === 0 ? (
-          <div className="p-8 text-center">
-            <p className="text-gray-500">No guests added yet. Click "Add New Guest" to begin.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Guest Name</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Added</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {guests.map((guest, idx) => (
-                  <motion.tr
-                    key={guest.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">{guest.guest_name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{new Date(guest.created_at).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-sm">
-                      <button
-                        onClick={() => handleDeleteGuest(guest.id, guest.guest_name)}
-                        disabled={deletingId === guest.id}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                        title="Remove guest"
-                      >
-                        {deletingId === guest.id ? (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Info Card */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h4 className="font-semibold text-blue-900 mb-2">How It Works</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>✅ Add guests by entering their names only</li>
-          <li>✅ Only guests in this list can access the RSVP form</li>
-          <li>✅ Once a guest submits an RSVP, their status changes to "responded"</li>
-          <li>✅ Remove guests if needed using the delete button</li>
-          <li>✅ See all RSVP responses in the "RSVPs" tab</li>
-        </ul>
-      </div>
-    </div>
-  );
-};
-
-/* ===========================================================
-   RSVP MANAGEMENT TAB
-   =========================================================== */
-
-const RsvpManagement: React.FC = () => {
-  const [rsvps, setRsvps] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "yes" | "no">("all");
-  const [resettingId, setResettingId] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetchRsvps();
-  }, []);
-
-  const fetchRsvps = async () => {
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from("rsvp_responses")
-        .select("*")
-        .eq("client", "client1")
-        .not("submitted_at", "is", null)
-        .order("submitted_at", { ascending: false });
-
-      if (error) throw error;
-      setRsvps(data || []);
-    } catch (error) {
-      console.error("Error fetching RSVPs:", error);
-    } finally {
-      setIsLoading(false);
+      setDeleteingId(null);
     }
   };
 
   const resetRsvp = async (rsvpId: number, guestName: string) => {
-    if (!confirm(`Reset RSVP for ${guestName}? They can fill it again.`)) {
-      return;
-    }
+    if (!confirm(`Reset RSVP for ${guestName}? They can fill it again.`)) return;
 
     setResettingId(rsvpId);
     try {
@@ -489,392 +311,531 @@ const RsvpManagement: React.FC = () => {
           special_requests: null,
           wish: null,
           submitted_at: null,
-          status: "invited",
         })
         .eq("id", rsvpId);
 
-      if (error) throw error;
-
-      alert(`RSVP for ${guestName} has been reset. They can now fill it again.`);
-      fetchRsvps();
-    } catch (error) {
-      console.error("Error resetting RSVP:", error);
-      alert("Error resetting RSVP. Please try again.");
+      if (error) {
+        setMessage({ type: "error", text: `Failed to reset: ${error.message}` });
+      } else {
+        setMessage({ type: "success", text: "✓ RSVP reset successfully" });
+        fetchRsvps();
+      }
+    } catch (err) {
+      setMessage({ type: "error", text: "Error resetting RSVP" });
     } finally {
       setResettingId(null);
     }
   };
 
   const filteredRsvps = rsvps.filter((rsvp) => {
-    if (filter === "yes") return rsvp.attending === true;
-    if (filter === "no") return rsvp.attending === false;
-    return true;
+    const matchesSearch = rsvp.guest_name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      filterAttending === "all" ||
+      (filterAttending === "yes" && rsvp.attending === true) ||
+      (filterAttending === "no" && rsvp.attending === false) ||
+      (filterAttending === "pending" && rsvp.submitted_at === null);
+    return matchesSearch && matchesFilter;
   });
 
-  const attendingCount = rsvps.filter((r) => r.attending === true).length;
-  const notAttendingCount = rsvps.filter((r) => r.attending === false).length;
-  const totalGuests = rsvps.reduce((sum, r) => sum + (r.guest_count || 0), 0);
-
-  return (
-    <div className="space-y-6">
-      {/* Statistics */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-600 font-semibold">Total Responses</p>
-          <p className="text-3xl font-bold text-blue-900">{rsvps.length}</p>
-        </div>
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
-          <p className="text-sm text-green-600 font-semibold">Attending</p>
-          <p className="text-3xl font-bold text-green-900">{attendingCount}</p>
-        </div>
-        <div className="bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-lg border border-red-200">
-          <p className="text-sm text-red-600 font-semibold">Not Attending</p>
-          <p className="text-3xl font-bold text-red-900">{notAttendingCount}</p>
-        </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
-          <p className="text-sm text-purple-600 font-semibold">Total Guests</p>
-          <p className="text-3xl font-bold text-purple-900">{totalGuests}</p>
-        </div>
-      </div>
-
-      {/* Filter Buttons */}
-      <div className="flex gap-2 flex-wrap">
-        <button
-          onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            filter === "all" ? "bg-rose-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-          }`}
-        >
-          All ({rsvps.length})
-        </button>
-        <button
-          onClick={() => setFilter("yes")}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            filter === "yes" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-          }`}
-        >
-          Attending ({attendingCount})
-        </button>
-        <button
-          onClick={() => setFilter("no")}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            filter === "no" ? "bg-red-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-          }`}
-        >
-          Not Attending ({notAttendingCount})
-        </button>
-        <button
-          onClick={fetchRsvps}
-          className="px-4 py-2 rounded-lg font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors ml-auto"
-        >
-          Refresh
-        </button>
-      </div>
-
-      {/* RSVP Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        {isLoading ? (
-          <div className="p-8 text-center text-gray-500">Loading RSVPs...</div>
-        ) : filteredRsvps.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">No RSVPs found</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Guest Name</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Attending</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Guest Count</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Dietary</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Allergies</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Special Requests</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Wedding Wish</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Submitted</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredRsvps.map((rsvp, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 font-semibold text-gray-800">{rsvp.guest_name}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          rsvp.attending ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {rsvp.attending ? "Yes" : "No"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">{rsvp.guest_count}</td>
-                    <td className="px-4 py-3 text-xs">{rsvp.dietary_restrictions || "-"}</td>
-                    <td className="px-4 py-3 text-xs">{rsvp.allergies || "-"}</td>
-                    <td className="px-4 py-3 text-xs max-w-xs truncate">{rsvp.special_requests || "-"}</td>
-                    <td className="px-4 py-3 text-xs max-w-xs truncate">{rsvp.wish || "-"}</td>
-                    <td className="px-4 py-3 text-xs">{new Date(rsvp.submitted_at).toLocaleDateString()}</td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => resetRsvp(rsvp.id, rsvp.guest_name)}
-                        disabled={resettingId === rsvp.id}
-                        className="px-3 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold hover:bg-red-200 disabled:opacity-50"
-                      >
-                        {resettingId === rsvp.id ? "Resetting..." : "Reset"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-/* ===========================================================
-   ANALYTICS TAB
-   =========================================================== */
-
-const Analytics: React.FC = () => {
-  const [stats, setStats] = useState({
-    totalRsvps: 0,
-    attendingPercentage: 0,
-    totalGuests: 0,
-    avgGuestsPerRsvp: 0,
-    dietaryRestrictions: 0,
-    allergies: 0,
-  });
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
-
-  const fetchAnalytics = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("rsvp_responses")
-        .select("*")
-        .eq("client", "client1")
-        .not("submitted_at", "is", null);
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        const attending = data.filter((r) => r.attending).length;
-        const totalGuests = data.reduce((sum, r) => sum + (r.guest_count || 0), 0);
-        const dietaryCount = data.filter((r) => r.dietary_restrictions).length;
-        const allergiesCount = data.filter((r) => r.allergies).length;
-
-        setStats({
-          totalRsvps: data.length,
-          attendingPercentage: Math.round((attending / data.length) * 100),
-          totalGuests,
-          avgGuestsPerRsvp: Math.round((totalGuests / data.length) * 10) / 10,
-          dietaryRestrictions: dietaryCount,
-          allergies: allergiesCount,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching analytics:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const stats = {
+    totalGuests: guests.length,
+    totalRsvps: rsvps.filter((r) => r.submitted_at !== null).length,
+    attending: rsvps.filter((r) => r.attending === true).length,
+    notAttending: rsvps.filter((r) => r.attending === false).length,
+    pending: rsvps.filter((r) => r.submitted_at === null).length,
   };
 
+  // Auto-hide message after 5 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-serif font-bold text-gray-800">Wedding Analytics</h2>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex flex-col md:flex-row overflow-hidden">
+      {/* SIDEBAR */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ x: -300 }}
+            animate={{ x: 0 }}
+            exit={{ x: -300 }}
+            className="fixed md:relative w-72 h-screen bg-gradient-to-b from-rose-900 to-rose-800 text-white flex flex-col shadow-2xl border-r border-rose-700 z-50"
+          >
+            <div className="p-8 border-b border-rose-700">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-200 to-pink-200 flex items-center justify-center shadow-lg">
+                  <Heart className="w-6 h-6 text-rose-900 fill-rose-900" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">Wedding</h2>
+                  <p className="text-rose-200 text-xs">Admin Panel</p>
+                </div>
+              </div>
+            </div>
 
-      {isLoading ? (
-        <div className="text-center text-gray-500 py-12">Loading analytics...</div>
-      ) : (
-        <>
-          {/* Main Stats */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-600 font-semibold">Total RSVP Responses</p>
-              <p className="text-4xl font-bold text-blue-900 mt-2">{stats.totalRsvps}</p>
+            <nav className="flex-1 p-6 space-y-3 overflow-y-auto">
+              {[
+                { id: "guests", icon: Users, label: "Guests" },
+                { id: "rsvps", icon: Heart, label: "RSVPs" },
+                { id: "analytics", icon: BarChart3, label: "Analytics" },
+              ].map((item) => (
+                <motion.button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveTab(item.id as any);
+                    if (window.innerWidth < 768) setSidebarOpen(false);
+                  }}
+                  whileHover={{ x: 4 }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition font-medium ${
+                    activeTab === item.id
+                      ? "bg-rose-500 shadow-lg"
+                      : "hover:bg-rose-700"
+                  }`}
+                >
+                  <item.icon size={20} />
+                  {item.label}
+                </motion.button>
+              ))}
+            </nav>
+
+            <div className="p-6 border-t border-rose-700 space-y-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  onLogout();
+                  localStorage.removeItem("client1_admin_auth");
+                }}
+                className="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 px-4 py-3 rounded-lg font-semibold transition"
+              >
+                <LogOut size={18} />
+                Logout
+              </motion.button>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="md:hidden w-full flex items-center justify-center gap-2 bg-rose-700 hover:bg-rose-800 px-4 py-3 rounded-lg font-semibold transition"
+              >
+                <X size={18} />
+                Close
+              </button>
             </div>
-            <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
-              <p className="text-sm text-green-600 font-semibold">Acceptance Rate</p>
-              <p className="text-4xl font-bold text-green-900 mt-2">{stats.attendingPercentage}%</p>
-            </div>
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
-              <p className="text-sm text-purple-600 font-semibold">Total Expected Guests</p>
-              <p className="text-4xl font-bold text-purple-900 mt-2">{stats.totalGuests}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* HEADER */}
+        <div className="bg-white border-b border-rose-100 shadow-sm sticky top-0 z-40">
+          <div className="flex items-center justify-between px-6 py-4">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden p-2 hover:bg-rose-100 rounded-lg transition"
+            >
+              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            <h1 className="hidden md:block text-2xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+              Wedding Event Dashboard
+            </h1>
+
+            <div className="flex items-center gap-2">
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-semibold text-gray-800">Wedding Admin</p>
+                <p className="text-xs text-gray-500">Event Manager</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Secondary Stats */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-white border border-gray-200 p-4 rounded-lg">
-              <p className="text-sm text-gray-600 font-semibold">Avg Guests per RSVP</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.avgGuestsPerRsvp}</p>
-            </div>
-            <div className="bg-white border border-gray-200 p-4 rounded-lg">
-              <p className="text-sm text-gray-600 font-semibold">Dietary Restrictions</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.dietaryRestrictions}</p>
-            </div>
-            <div className="bg-white border border-gray-200 p-4 rounded-lg">
-              <p className="text-sm text-gray-600 font-semibold">Allergies Reported</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.allergies}</p>
-            </div>
-          </div>
+        {/* MESSAGE ALERT */}
+        <AnimatePresence>
+          {message && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className={`mx-4 mt-4 flex items-center gap-3 px-4 py-3 rounded-xl border ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-700 border-green-200"
+                  : "bg-red-50 text-red-700 border-red-200"
+              }`}
+            >
+              {message.type === "success" ? (
+                <Check size={18} />
+              ) : (
+                <AlertCircle size={18} />
+              )}
+              {message.text}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          {/* Info Cards */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-rose-50 border border-rose-200 p-4 rounded-lg">
-              <h4 className="font-semibold text-rose-900 mb-2">Key Insight</h4>
-              <p className="text-sm text-rose-800">
-                Based on current RSVPs, you're expecting <strong>{stats.totalGuests}</strong> guests in total, with an average of <strong>{stats.avgGuestsPerRsvp}</strong> guests per RSVP.
-              </p>
-            </div>
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-900 mb-2">Dietary Info</h4>
-              <p className="text-sm text-blue-800">
-                <strong>{stats.dietaryRestrictions}</strong> guests have dietary restrictions and <strong>{stats.allergies}</strong> have reported allergies. Plan accordingly!
-              </p>
-            </div>
-          </div>
-        </>
-      )}
+        {/* CONTENT AREA */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <AnimatePresence mode="wait">
+            {/* GUESTS TAB */}
+            {activeTab === "guests" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+              >
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-800">Guest List</h2>
+                    <p className="text-gray-500 mt-1 text-sm">{guests.length} guests invited</p>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowAddForm(!showAddForm)}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition"
+                  >
+                    <Plus size={20} />
+                    Add Guest
+                  </motion.button>
+                </div>
+
+                <AnimatePresence>
+                  {showAddForm && (
+                    <motion.form
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      onSubmit={handleAddGuest}
+                      className="bg-white rounded-xl shadow-md border border-rose-100 p-6 mb-6"
+                    >
+                      <h3 className="font-bold text-lg text-gray-800 mb-4">Add New Guest</h3>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          type="text"
+                          value={guestName}
+                          onChange={(e) => setGuestName(e.target.value)}
+                          placeholder="Enter guest name..."
+                          className="flex-1 px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          autoFocus
+                        />
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="px-6 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 disabled:opacity-50 font-semibold transition"
+                        >
+                          {isSubmitting ? "Adding..." : "Add"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowAddForm(false)}
+                          className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+
+                <div className="grid gap-3">
+                  {loading ? (
+                    <div className="flex justify-center py-12">
+                      <Loader className="animate-spin text-rose-500" size={32} />
+                    </div>
+                  ) : guests.length === 0 ? (
+                    <div className="text-center py-12 bg-white rounded-xl border border-rose-100">
+                      <Heart className="mx-auto text-gray-300 mb-3" size={48} />
+                      <p className="text-gray-500 text-lg">No guests added yet</p>
+                    </div>
+                  ) : (
+                    guests.map((guest) => (
+                      <motion.div
+                        key={guest.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="bg-white rounded-lg border border-rose-100 p-4 flex justify-between items-center hover:shadow-md transition"
+                      >
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-800">{guest.guest_name}</p>
+                          <p className="text-xs text-gray-500">
+                            Added {new Date(guest.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleDeleteGuest(guest.id, guest.guest_name)}
+                          disabled={deletingId === guest.id}
+                          className="p-2 hover:bg-red-100 rounded-lg transition text-red-600 disabled:opacity-50"
+                        >
+                          {deletingId === guest.id ? (
+                            <Loader size={18} className="animate-spin" />
+                          ) : (
+                            <Trash2 size={18} />
+                          )}
+                        </motion.button>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* RSVPS TAB */}
+            {activeTab === "rsvps" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+              >
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">RSVP Responses</h2>
+
+                  {/* FILTERS */}
+                  <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <input
+                        type="text"
+                        placeholder="Search by name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                      />
+                    </div>
+                    <select
+                      value={filterAttending}
+                      onChange={(e) => setFilterAttending(e.target.value as any)}
+                      className="px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white text-gray-700"
+                    >
+                      <option value="all">All Responses</option>
+                      <option value="yes">Attending</option>
+                      <option value="no">Not Attending</option>
+                      <option value="pending">Pending</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid gap-4">
+                  {loading ? (
+                    <div className="flex justify-center py-12">
+                      <Loader className="animate-spin text-rose-500" size={32} />
+                    </div>
+                  ) : filteredRsvps.length === 0 ? (
+                    <div className="text-center py-12 bg-white rounded-xl border border-rose-100">
+                      <Heart className="mx-auto text-gray-300 mb-3" size={48} />
+                      <p className="text-gray-500 text-lg">No RSVPs to display</p>
+                    </div>
+                  ) : (
+                    filteredRsvps.map((rsvp) => (
+                      <motion.div
+                        key={rsvp.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="bg-white rounded-lg border border-rose-100 p-5 hover:shadow-md transition"
+                      >
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p className="text-sm text-gray-600">Guest Name</p>
+                            <p className="font-bold text-gray-800 text-lg">{rsvp.guest_name}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">Status</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              {rsvp.submitted_at === null ? (
+                                <span className="inline-block px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-semibold">
+                                  ⏳ Pending
+                                </span>
+                              ) : rsvp.attending ? (
+                                <span className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                  ✓ Attending
+                                </span>
+                              ) : (
+                                <span className="inline-block px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+                                  ✗ Not Attending
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {rsvp.submitted_at !== null && (
+                          <>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-sm bg-gray-50 p-4 rounded-lg">
+                              {rsvp.guest_count !== null && (
+                                <div>
+                                  <span className="text-gray-600 text-xs">Guests</span>
+                                  <p className="font-bold text-gray-800">{rsvp.guest_count}</p>
+                                </div>
+                              )}
+                              {rsvp.dietary_restrictions && (
+                                <div>
+                                  <span className="text-gray-600 text-xs">Dietary</span>
+                                  <p className="font-bold text-gray-800">{rsvp.dietary_restrictions}</p>
+                                </div>
+                              )}
+                              {rsvp.allergies && (
+                                <div>
+                                  <span className="text-gray-600 text-xs">Allergies</span>
+                                  <p className="font-bold text-gray-800">{rsvp.allergies}</p>
+                                </div>
+                              )}
+                              {rsvp.special_requests && (
+                                <div>
+                                  <span className="text-gray-600 text-xs">Requests</span>
+                                  <p className="font-bold text-gray-800">{rsvp.special_requests}</p>
+                                </div>
+                              )}
+                            </div>
+                            {rsvp.wish && (
+                              <div className="mb-4 p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                                <p className="text-xs text-gray-600 mb-2 font-semibold">💌 Wishes & Message</p>
+                                <p className="text-gray-800 italic">"{rsvp.wish}"</p>
+                              </div>
+                            )}
+                          </>
+                        )}
+
+                        <div className="flex gap-2 justify-end pt-4 border-t border-gray-100">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => resetRsvp(rsvp.id, rsvp.guest_name)}
+                            disabled={resettingId === rsvp.id}
+                            className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 disabled:opacity-50 font-semibold transition text-sm"
+                          >
+                            {resettingId === rsvp.id ? (
+                              <Loader size={16} className="animate-spin" />
+                            ) : (
+                              <RotateCcw size={16} />
+                            )}
+                            Reset
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* ANALYTICS TAB */}
+            {activeTab === "analytics" && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+              >
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">Event Analytics</h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                  {[
+                    { label: "Total Guests", value: stats.totalGuests, color: "from-rose-500 to-pink-600", icon: Users },
+                    { label: "RSVPs Received", value: stats.totalRsvps, color: "from-blue-500 to-blue-600", icon: Check },
+                    { label: "Attending", value: stats.attending, color: "from-green-500 to-green-600", icon: Check },
+                    { label: "Not Attending", value: stats.notAttending, color: "from-red-500 to-red-600", icon: X },
+                    { label: "Pending", value: stats.pending, color: "from-yellow-500 to-yellow-600", icon: AlertCircle },
+                  ].map((stat, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className={`bg-gradient-to-br ${stat.color} text-white rounded-lg p-6 shadow-lg`}
+                    >
+                      <stat.icon className="mb-2" size={24} />
+                      <p className="text-4xl font-bold">{stat.value}</p>
+                      <p className="text-sm opacity-90 mt-1">{stat.label}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* SUMMARY */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-xl shadow-md p-6 border border-rose-100">
+                    <h3 className="font-bold text-lg text-gray-800 mb-4">Response Rate</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm text-gray-600">Responses Submitted</span>
+                          <span className="text-sm font-bold text-gray-800">
+                            {stats.totalGuests > 0
+                              ? Math.round((stats.totalRsvps / stats.totalGuests) * 100)
+                              : 0}
+                            %
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div
+                            className="bg-gradient-to-r from-rose-500 to-pink-600 h-3 rounded-full transition-all"
+                            style={{
+                              width: `${stats.totalGuests > 0 ? (stats.totalRsvps / stats.totalGuests) * 100 : 0}%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl shadow-md p-6 border border-rose-100">
+                    <h3 className="font-bold text-lg text-gray-800 mb-4">Attendance Breakdown</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Attending</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-green-500 h-2 rounded-full"
+                              style={{
+                                width: `${stats.totalRsvps > 0 ? (stats.attending / stats.totalRsvps) * 100 : 0}%`,
+                              }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-bold w-12 text-right">{stats.attending}</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Not Attending</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-red-500 h-2 rounded-full"
+                              style={{
+                                width: `${stats.totalRsvps > 0 ? (stats.notAttending / stats.totalRsvps) * 100 : 0}%`,
+                              }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-bold w-12 text-right">{stats.notAttending}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };
 
-/* ===========================================================
-   MAIN ADMIN DASHBOARD
-   =========================================================== */
-
+/* ====================== MAIN COMPONENT ======================= */
 export default function AdminClient1() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeTab, setActiveTab] = useState<"guests" | "rsvp" | "analytics">("guests");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  useEffect(() => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const auth = localStorage.getItem("client1_admin_auth");
-    if (auth) {
-      setIsLoggedIn(true);
-    }
-  }, []);
+    return !!auth;
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("client1_admin_auth");
-    setIsLoggedIn(false);
-    setActiveTab("guests");
+    setIsAuthenticated(false);
   };
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  if (!isLoggedIn) {
-    return <LoginPage onLogin={handleLogin} />;
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <motion.div
-        initial={false}
-        animate={{ width: sidebarOpen ? 280 : 80 }}
-        className="bg-gray-900 text-white transition-all duration-300 flex flex-col overflow-hidden"
-      >
-        {/* Logo */}
-        <div className="p-6 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <Heart className="w-8 h-8 text-rose-500" />
-            {sidebarOpen && <h1 className="text-xl font-serif font-bold">Admin</h1>}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
-          <button
-            onClick={() => setActiveTab("guests")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              activeTab === "guests" ? "bg-rose-600" : "hover:bg-gray-800"
-            }`}
-          >
-            <Users size={20} />
-            {sidebarOpen && <span>Guest List</span>}
-          </button>
-          <button
-            onClick={() => setActiveTab("rsvp")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              activeTab === "rsvp" ? "bg-rose-600" : "hover:bg-gray-800"
-            }`}
-          >
-            <Heart size={20} />
-            {sidebarOpen && <span>RSVPs</span>}
-          </button>
-          <button
-            onClick={() => setActiveTab("analytics")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-              activeTab === "analytics" ? "bg-rose-600" : "hover:bg-gray-800"
-            }`}
-          >
-            <BarChart3 size={20} />
-            {sidebarOpen && <span>Analytics</span>}
-          </button>
-        </nav>
-
-        {/* Logout Button */}
-        <div className="p-4 border-t border-gray-800">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors"
-          >
-            <LogOut size={20} />
-            {sidebarOpen && <span>Logout</span>}
-          </button>
-        </div>
-
-        {/* Toggle Sidebar */}
-        <div className="p-2">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="w-full p-2 hover:bg-gray-800 rounded-lg"
-          >
-            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="p-8">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-serif font-bold text-gray-900">
-                {activeTab === "guests" && "Guest List Management"}
-                {activeTab === "rsvp" && "RSVP Management"}
-                {activeTab === "analytics" && "Analytics Dashboard"}
-              </h1>
-              <p className="text-gray-600 mt-2">
-                {activeTab === "guests" && "Add, edit, or remove guests from your authorized guest list"}
-                {activeTab === "rsvp" && "View and manage all guest RSVPs and wishes"}
-                {activeTab === "analytics" && "View insights about your wedding"}
-              </p>
-            </div>
-
-            {/* Tab Content */}
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {activeTab === "guests" && <GuestListManagement />}
-              {activeTab === "rsvp" && <RsvpManagement />}
-              {activeTab === "analytics" && <Analytics />}
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </div>
+  return isAuthenticated ? (
+    <AdminDashboard onLogout={handleLogout} />
+  ) : (
+    <LoginPage onLogin={() => setIsAuthenticated(true)} />
   );
 }

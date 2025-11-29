@@ -108,11 +108,14 @@ export function AdditionalFeatures() {
                   whileHover={{ rotate: 12, scale: 1.15 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <feature.icon className="h-6 w-6" />
+                  <feature.icon className="h-6 w-6 text-black dark:text-white" />
                 </motion.div>
 
                 <motion.h3
-                  className="text-xl font-bold mb-2 relative z-10"
+                  className="text-xl font-bold mb-2 relative z-10 
+             bg-clip-text text-transparent 
+             bg-gradient-to-r from-black to-blue-500 
+             dark:from-white dark:to-blue-300"
                   initial={{ opacity: 0 }}
                   animate={inView ? { opacity: 1 } : { opacity: 0 }}
                   transition={{ delay: 0.2 }}
@@ -121,7 +124,7 @@ export function AdditionalFeatures() {
                 </motion.h3>
 
                 <motion.p
-                  className="text-2xl font-bold text-accent mb-3 relative z-10"
+                  className="text-2xl font-bold text-black dark:text-white mb-3 relative z-10"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                   transition={{ delay: 0.3 }}

@@ -8,7 +8,7 @@ export function Footer() {
     {
       name: "Facebook",
       icon: Facebook,
-      url: "https://facebook.com/LynxInvitationOfficial",
+      url: "https://www.facebook.com/profile.php?id=61584154962667",
       color: "hover:text-blue-600",
     },
     {
@@ -72,17 +72,14 @@ export function Footer() {
                 whileHover={{ scale: 1.05 }}
                 className="flex items-center gap-3 group w-fit cursor-pointer"
               >
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-accent to-accent/70 
-                              group-hover:shadow-lg group-hover:shadow-accent/30 
-                              transition-all duration-300">
-                  <img
-                    src="/favicon.ico"
-                    alt="LynxInvitation Logo"
-                    className="h-6 w-6 brightness-0 dark:brightness-100"
+                <div className="p-2 rounded-lg bg-accent/10 dark:bg-accent/20 hover:scale-110 transition-transform duration-300">
+                  <img 
+                    src="/favicon.ico" 
+                    alt="LynxInvitation Logo" 
+                    className="h-6 w-6 md:h-7 md:w-7 brightness-0 dark:brightness-100" 
                   />
                 </div>
-                <span className="text-2xl font-bold tracking-tight 
-                               text-foreground group-hover:text-accent transition-colors">
+                <span className="text-lg md:text-xl font-bold tracking-tight text-black dark:text-white">
                   LynxInvitation
                 </span>
               </motion.div>

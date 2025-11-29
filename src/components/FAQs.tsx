@@ -147,7 +147,7 @@ export function FAQs() {
         >
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
             Frequently Asked{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gray-900 to-[#1e3a8a] bg-clip-text text-transparent">
               Questions
             </span>
           </h2>
@@ -204,9 +204,9 @@ export function FAQs() {
                           whileHover={{ rotate: 10, scale: 1.1 }}
                           transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
-                          <faq.icon className="w-6 h-6 text-cyan-400" />
+                          <faq.icon className="w-6 h-6 black dark:white" />
                         </motion.div>
-                        <span className="group-hover:text-cyan-300 transition-colors">
+                        <span className="group-hover:text-[#1e3a8a] transition-colors">
                           {faq.question}
                         </span>
                       </AccordionTrigger>

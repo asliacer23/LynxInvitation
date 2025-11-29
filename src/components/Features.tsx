@@ -112,7 +112,7 @@ export function Features() {
                 whileHover={{ rotate: 10, scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <feature.icon className="h-6 w-6" />
+                <feature.icon className="h-6 w-6 text-black dark:text-white" />
               </motion.div>
 
               <motion.h3

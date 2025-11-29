@@ -14,6 +14,8 @@ import { Cookies } from "./pages/Cookies";
 import { Disclaimer } from "./pages/Disclaimer";
 import Client1Homepage from '@/pagesforcustomers/Client1/Client1';
 import AdminClient1 from '@/pagesforcustomers/Client1/AdminClient1/AdminClient1';
+import Client2Homepage from '@/pagesforcustomers/Client2/Client2';
+import AdminClient2 from '@/pagesforcustomers/Client2/AdminClient2/AdminClient2';
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Chatbot } from "@/components/Chatbot";
 
@@ -37,10 +39,15 @@ const App = () => (
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
             
-            {/* Client1 Routes */}
+            {/* Client1 Routes (Wedding) */}
             <Route path="/client1" element={<Client1Homepage />} />
             <Route path="/client1/*" element={<Client1Homepage />} />
             <Route path="/client1/admin" element={<AdminClient1 />} />
+
+            {/* Client2 Routes (Debut) */}
+            <Route path="/client2" element={<Client2Homepage />} />
+            <Route path="/client2/*" element={<Client2Homepage />} />
+            <Route path="/client2/admin" element={<AdminClient2 />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

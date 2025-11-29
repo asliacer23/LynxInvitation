@@ -216,7 +216,7 @@ export function Pricing() {
 
                   {plan.highlighted && (
                     <motion.div
-                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-accent text-accent-foreground text-xs font-semibold rounded-full"
+                      className="absolute top-6 right-6 px-3 py-1 bg-accent text-accent-foreground text-xs font-semibold rounded-full z-20"
                       animate={{ y: [0, -5, 0] }}
                       transition={{ duration: 3, repeat: Infinity }}
                     >

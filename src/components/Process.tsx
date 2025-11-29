@@ -107,7 +107,7 @@ export function Process() {
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
                 <motion.span
-                  className="text-2xl font-bold"
+                  className="text-2xl font-bold text-black dark:text-white"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
                   transition={{ delay: 0.1 + index * 0.12, duration: 0.5 }}

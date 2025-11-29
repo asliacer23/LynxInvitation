@@ -81,36 +81,51 @@ export function Hero() {
         animate="visible"
       >
         {/* Badge with animation */}
-        <motion.div
-          variants={itemVariants}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyber-border bg-card/50 backdrop-blur-sm"
-        >
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity }}>
-            <Sparkles className="h-4 w-4 text-accent" />
-          </motion.div>
-          <span className="text-sm text-muted-foreground">Next-Gen Digital Invitations</span>
-        </motion.div>
+<motion.div
+  variants={itemVariants}
+  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyber-border bg-card/50 backdrop-blur-sm"
+>
+  <motion.div
+    animate={{ rotate: 360 }}
+    transition={{ duration: 2, repeat: Infinity }}
+    className="h-4 w-4"
+  >
+    <img
+      src="/favicon.ico"   // Make sure this path points to your favicon
+      alt="Logo"
+      className="h-4 w-4 object-contain"
+    />
+  </motion.div>
+  <span className="text-sm text-muted-foreground">Next-Gen Digital Invitations</span>
+</motion.div>
 
-        {/* Main heading with staggered text animation */}
+        {/* Main Heading with animated gradient text */}
         <motion.div variants={itemVariants}>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter">
             <motion.span
-              className="block text-gradient"
+              className="
+                block
+                bg-clip-text
+                text-transparent
+                transition-colors
+                duration-500
+                /* Light mode gradient: black + dark blue mix */
+                bg-[linear-gradient(to_right,black,hsl(220,60%,25%),black)]
+                /* Dark mode gradient: white + dark blue mix */
+                dark:bg-[linear-gradient(to_right,white,hsl(220,60%,25%),white)]
+              "
               initial={{ backgroundPosition: "0% 50%" }}
-              animate={{ backgroundPosition: "100% 50%" }}
-              transition={{ duration: 3, repeat: Infinity }}
+              animate={{ backgroundPosition: "200% 50%" }}
+              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
               style={{
                 backgroundSize: "200% 200%",
-                backgroundImage: "linear-gradient(to right, #d4af37, #f4e4c1, #d4af37)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
               }}
             >
               Next-Gen Digital Invitations
             </motion.span>
           </h1>
         </motion.div>
+
 
         {/* Subheading */}
         <motion.div variants={itemVariants}>
